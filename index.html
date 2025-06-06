@@ -68,6 +68,7 @@
 <body>
   <div class="iframe-wrapper">
     <iframe 
+      id="booking-frame"
       src="https://script.google.com/macros/s/AKfycbzoggSxGoZhf7EXwkhVnpGGu_cX8AJrg8aVOpE-kXdAP3l6W5fNyrT1eBul_HM1Ui0M/exec"
       title="Emerald Hills EV Charger Booking"
       sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-downloads">
@@ -238,5 +239,36 @@
 	  window.addEventListener('orientationchange', adjustIframeHeight);
 	  document.addEventListener('DOMContentLoaded', adjustIframeHeight);
   </script>
+
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBgry0qgmprMVXk0svD8sPX-wqLnH6m80U",
+  authDomain: "bookingsync-94975.firebaseapp.com",
+  databaseURL: "https://bookingsync-94975-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "bookingsync-94975",
+  storageBucket: "bookingsync-94975.firebasestorage.app",
+  messagingSenderId: "941285031936",
+  appId: "1:941285031936:web:5fbb2e3ef9ff730e4e98e5"
+};
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const iframe = document.getElementById('booking-frame');
+
+  db.ref('server/lastUpdate').on('value', (snapshot) => {
+    const timestamp = snapshot.val();
+    if (timestamp) {
+      console.log("🔄 Booking updated at", new Date(timestamp));
+      if (iframe) {
+        iframe.src = iframe.src;  // ✅ Cross-origin-safe reload
+      }
+    }
+  });
+</script>
 </body>
 </html>
