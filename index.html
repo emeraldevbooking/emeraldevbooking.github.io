@@ -1,54 +1,242 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="manifest" href="/assets/images/favicons/site.webmanifest">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicons/favicon-16x16.png">
-<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    <title>Emerald Hills EV Charger Booking</title>
-    <style>
-        body {
-            font-family: 'Poppins', Arial, sans-serif; /* Use Poppins from your original CSS */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Align content to the top */
-            min-height: 100vh;
-            background-color: #ffffff; /* Match your original body background */
-            color: #545454; /* Match your original text color */
-        }
+  <meta charset="UTF-8">
+  <title>Emerald Hills EV Charger Reservation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-        .iframe-container {
-            width: 100%;
-            flex-grow: 1; /* Allow container to grow and fill available space */
-            margin: 0 20px 20px 20px; /* Add horizontal margin and bottom margin */
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
-            /* You might need to adjust height based on the content of your Apps Script app */
-            /* A good starting point for height that allows scrolling within the iframe */
-            height: calc(100vh - 100px); /* Example: full viewport height minus header/footer space */
-            overflow: hidden; /* Important for iframe */
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none; /* Remove default iframe border */
-            display: block; /* Helps remove extra space below iframe */
-        }
-        /* Responsive adjustments for the iframe container */
-        @media (max-width: 768px) {
-            .iframe-container {
-                height: calc(100vh - 80px); /* Adjust height for smaller screens */
-                margin: 0 10px 10px 10px; /* Reduce margins on smaller screens */
-            }
-        }
-    </style>
+  <!-- PWA Manifest and Icons -->
+  <link rel="manifest" href="/assets/images/favicons/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicons/favicon-16x16.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+  <style>
+    .iframe-wrapper {
+	  width: 100%;
+	  display: flex;
+	  flex-direction: column;
+	  min-height: 100vh; /* fallback */
+	}
+
+	@supports (height: 100dvh) {
+	  .iframe-wrapper {
+		min-height: 100dvh; /* safari & modern browsers */
+		padding-bottom: env(safe-area-inset-bottom, 1px); /* 👈 Ensures iframe isn't cut off */
+	  }
+	}
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      flex-grow: 1;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: #ffffff;
+      color: #545454;
+      display: flex;
+      flex-direction: column;
+	  padding-bottom: env(safe-area-inset-bottom, 1px); /* 👈 Adds safe space at bottom */
+    }
+
+    #installBtn {
+      position: static;
+      top: 10px;
+      left: 10px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px 8px 0px 0px;
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1000;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="iframe-container">
-        <iframe src="https://script.google.com/macros/s/AKfycbzoggSxGoZhf7EXwkhVnpGGu_cX8AJrg8aVOpE-kXdAP3l6W5fNyrT1eBul_HM1Ui0M/exec" title="Emerald Hills EV Charger Booking System"></iframe>
-    </div>
+  <div class="iframe-wrapper">
+    <iframe 
+      src="https://script.google.com/macros/s/AKfycbzoggSxGoZhf7EXwkhVnpGGu_cX8AJrg8aVOpE-kXdAP3l6W5fNyrT1eBul_HM1Ui0M/exec"
+      title="Emerald Hills EV Charger Booking"
+      sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-downloads">
+    </iframe>
+  </div>
+  
+  <div id="updateToast" style="
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    font-family: sans-serif;
+    text-align: center;
+    max-width: 90vw;
+    box-sizing: border-box;
+  ">
+    <div style="margin-bottom: 8px; white-space: nowrap;">🔄 New version available</div>
+    <button id="refreshBtn" style="
+      padding: 6px 12px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    ">Update Now</button>
+  </div>
+
+  <!-- Button Only -->
+  <button id="installBtn">Install App</button>
+  <button id="updateAppBtn" style="display: none;">🔄 New version available. Click to update.</button>
+
+  <script>
+	// Register service worker
+	if ('serviceWorker' in navigator) {
+	  let refreshing = false;
+	  let newWorker = null;
+
+	  navigator.serviceWorker.register('/service-worker.js').then(reg => {
+		console.log('SW registered:', reg);
+		
+		reg.addEventListener('updatefound', () => {
+		  newWorker = reg.installing;
+		  console.log('New SW found, installing...');
+		  
+		  newWorker.addEventListener('statechange', () => {
+			console.log('SW state changed to:', newWorker.state);
+			
+			if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+			  console.log('New SW installed, showing update toast');
+			  // Show toast when update is available
+			  const toast = document.getElementById('updateToast');
+			  if (toast) {
+				toast.style.display = 'block';
+				
+				// Remove any existing event listeners to prevent duplicates
+				const refreshBtn = document.getElementById('refreshBtn');
+				const newRefreshBtn = refreshBtn.cloneNode(true);
+				refreshBtn.parentNode.replaceChild(newRefreshBtn, refreshBtn);
+				
+				// Add click handler for update button
+				newRefreshBtn.addEventListener('click', async () => {
+				  console.log('User clicked refresh button');
+				  
+				  try {
+					// Clear cache
+					const cacheNames = await caches.keys();
+					await Promise.all(cacheNames.map(name => caches.delete(name)));
+					console.log('Caches cleared');
+					
+					// Set reload flag before triggering skipWaiting
+					refreshing = true;
+					
+					// Hide toast
+					toast.style.display = 'none';
+					
+					// Skip waiting - send message to the waiting service worker
+					if (newWorker) {
+					  newWorker.postMessage({ action: 'skipWaiting' });
+					} else {
+					  // Fallback: send to current controller
+					  navigator.serviceWorker.controller?.postMessage({ action: 'skipWaiting' });
+					}
+				  } catch (error) {
+					console.error('Error during update process:', error);
+					// Reset flag if error occurs
+					refreshing = false;
+				  }
+				});
+			  }
+			}
+		  });
+		});
+	  }).catch(err => {
+		console.error('SW registration failed:', err);
+	  });
+
+	  // Reload page when new SW takes control
+	  navigator.serviceWorker.addEventListener('controllerchange', () => {
+		console.log('Controller changed, refreshing flag:', refreshing);
+		
+		if (refreshing) {
+		  console.log('Reloading page...');
+		  window.location.reload();
+		}
+	  });
+	}
+
+    // Resize iframe dynamically if needed
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'iframeHeight') {
+        const iframeElement = document.querySelector('iframe');
+        if (iframeElement) {
+          iframeElement.style.height = (event.data.height + 50) + 'px';
+        }
+      }
+    });
+
+    // Handle install prompt
+    window.addEventListener('DOMContentLoaded', () => {
+      let deferredPrompt;
+
+      const installBtn = document.getElementById('installBtn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'inline-block';
+
+        installBtn.addEventListener('click', () => {
+          installBtn.style.display = 'none';
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(choice => {
+            console.log(choice.outcome);
+            deferredPrompt = null;
+          });
+        }, { once: true });
+      });
+    });
+	
+	/* Detect iOS Safari + Set Dynamic Height via JS */
+		function isIOS() {
+		  return /iPad|iPhone|iPod/.test(navigator.platform) ||
+				 (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+		}
+
+		function isSafari() {
+		  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) &&
+				 navigator.vendor && navigator.vendor.includes("Apple");
+		}
+
+	  function adjustIframeHeight() {
+		if (isIOS() && isSafari()) {
+		  const iframe = document.querySelector('iframe');
+		  if (iframe) {
+			iframe.style.height = `${window.innerHeight}px`;
+		  }
+		}
+	  }
+
+	  window.addEventListener('resize', adjustIframeHeight);
+	  window.addEventListener('orientationchange', adjustIframeHeight);
+	  document.addEventListener('DOMContentLoaded', adjustIframeHeight);
+  </script>
 </body>
 </html>
