@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emerald-hills-ev-cache-V2.1.1'; // Incrementing version to ensure update
+const CACHE_NAME = 'emerald-hills-ev-cache-Version 2.2 Build_251220'; // Incrementing version to ensure update
 
 // A list of critical static files (the "App Shell") to cache on install
 const urlsToCache = [
@@ -55,10 +55,13 @@ self.addEventListener('fetch', event => {
       fetch(request)
         .then(networkResponse => {
           // If we get a good response, clone it and update the cache for offline fallback.
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, responseToCache);
-          });
+            if (request.method === 'GET') {
+            // If we get a good response, clone it and update the cache for offline fallback.
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseToCache);
+            });
+          }
           return networkResponse;
         })
         .catch(() => {
