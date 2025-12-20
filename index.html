@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8"> 
@@ -885,6 +885,14 @@
     .time-selector-group { margin-top: 15px; }
     .time-selector-group label { display: block; font-size: 14px; font-weight: 500; color: #34495e; margin-bottom: 15px; }
     .time-selector-group label span { float: right; font-weight: 600; background-color: #f0f3f5; padding: 3px 8px; border-radius: 5px; }
+
+    /* Disabled state for sliders and date pickers */
+    .time-selector-group.disabled { opacity: 0.5; pointer-events: none; }
+    .time-selector-group.disabled label { color: #95a5a6; }
+    .time-selector-group.disabled .time-slider { background: #d0d0d0 !important; }
+    .time-selector-group.disabled .noUi-target { background: #d0d0d0 !important; }
+    .time-selector-group.disabled .noUi-handle { background: #bbb !important; cursor: not-allowed !important; }
+    .flatpickr-calendar.disabled { opacity: 0.5; pointer-events: none; }
     
     @media (max-width: 768px) {
       .modal-content h2 {
@@ -967,20 +975,36 @@
         rgba(255, 0, 0, 0.6) 6px,
         rgba(255, 0, 0, 0.6) 12px
       );
-      background-size: 40px 40px;
-      animation: moveStripes 2s linear infinite;
+      background-size: 36px 36px; 
+      background-repeat: repeat-x;
+      animation: moveStripes 3s linear infinite;
     }
     
+    .userreserved-slot {
+      position: absolute;
+      height: 100%;
+      border-radius: 4px;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(110, 255, 255, 1),
+        rgba(110, 255, 255, 1) 6px,
+        rgba(143, 255, 255, 1) 6px,
+        rgba(143, 255, 255, 1) 12px
+      );
+      background-size: 36px 36px; 
+      background-repeat: repeat-x;
+      animation: moveStripes 3s linear infinite;
+    }
+
     /* Animation for the stripe movement */
     @keyframes moveStripes {
       0% {
         background-position: 0 0;
       }
       100% {
-        background-position: 40px 0;
+        background-position: 36px 0; 
       }
     }
-
     
     /* Green indicator for selected available range */
     #selected-range-indicator {
@@ -992,20 +1016,20 @@
       left: -1px;
       right: -1px;
       z-index: 1;
-      box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
     }
     @keyframes greenGlow {
       0% {
         background-position: 0% 50%;
-        box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+        box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
       }
       50% {
         background-position: 100% 50%;
-        box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+        box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
       }
       100% {
         background-position: 0% 50%;
-        box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+        box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
       }
     }
 
@@ -1729,15 +1753,15 @@
                 </div>
                 <div class="section-content">
                     <div class="section-content-inner">
-                        <strong>Reservation Cancellation Notice</strong>
-                        If you wish to cancel a reservation you made, please use the cancellation link provided in your booking confirmation email.<br><br>
+                        <strong>Reservation Update and Cancellation Notice</strong>
+                        If you wish to update or cancel a reservation you made, please click on the "Update Reservation" or "Cancel Reservation" button in your reservation confirmation email. Refer to "FAQ" section for more information.<br><br>
                         
                         <strong>Having issues with Your Reservation?</strong>
                         Contact us via WhatsApp:<br>
                         Ken - <a href="https://wa.link/2j8nrw" target="_blank" rel="noopener noreferrer">Chat with Ken</a><br>
                         Max - <a href="https://wa.link/soelvy" target="_blank" rel="noopener noreferrer">Chat with Max</a><br><br>
                         
-                        We're happy to assist with any modifications or cancellations to your reservation.<br><br>
+                        We're happy to assist you.<br><br>
                         
                         <strong>Join the Community!</strong>
                         Connect with other EV owners in Emerald Hills by joining our WhatsApp group:<br>
@@ -1769,11 +1793,8 @@
                         <strong>Q: What timezone is the time shown in?</strong>
                         All users will see the time displayed in Malaysia Time (GMT+8).<br><br>
                         
-                        <strong>Q: How do I cancel a reservation?</strong>
-                        To cancel a reservation, please use the unique cancellation link provided in your booking confirmation email.<br><br>
-                        
-                        <strong>Q: How do I modify my reservation?</strong>
-                        To make changes to an existing reservation, please cancel your current booking using the cancellation link, then submit a new reservation.
+                        <strong>Q: How do I update or cancel a reservation?</strong>
+                        Please click on the "Update Reservation" or "Cancel Reservation" button in your reservation confirmation email to update or cancel a reservation. Cancelled reservation and reservation that has ended cannot be updated.<br><br>
                     </div>
                 </div>
             </div>
@@ -1808,7 +1829,7 @@
             </div>
 
             <div class="copyright">
-                © <span id="copyrightYear"></span> Version 2.1 Build_251207
+                © <span id="copyrightYear"></span> Version 2.2 Build_251220
             </div>
         </div>
 
@@ -1905,7 +1926,7 @@
   </div>
   
   <!-- PWA & Firebase Notifications -->
-  <div id="updateToast"><div>🔄 New version available. Updating..</div></div>
+  <div id="updateToast"><div>🚀 New version available. Updating..</div></div>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -1927,11 +1948,67 @@
     /* =================================================================
        CORE APP LOGIC (refactored from script.txt)
        ================================================================= */
+    
+    let modifyMode = false;
+    let modifyBookingId = null;
+    let modifyEmail = null;
+    let reservationHasStarted = false;
+    
     let currentIndex = 0;
     const tabPanels = ['status', 'calendar', 'form'];
     let calendar = null;
     let allEvents = [];
     let tabHeaderState = {};
+    
+    function prefillModifyForm(b) {
+        document.getElementById("name").value = b.name;
+        document.getElementById("plate").value = b.plate;
+        document.getElementById("phone").value = b.phone || "";
+        document.getElementById("email").value = b.email;  // FIXED
+        document.getElementById("charger").value = b.charger;
+              
+        document.getElementById("datetime_display").value =
+            `${new Date(b.startISO).toLocaleString()} → ${new Date(b.endISO).toLocaleString()}`;
+              
+        document.getElementById("start_datetime").value = b.startISO;
+        document.getElementById("end_datetime").value = b.endISO;
+              
+        document.querySelector("#bookingForm button[type='submit']").textContent = "UPDATE RESERVATION";
+              
+        showMessage("success", "Please proceed to update your reservation.");
+    }
+    
+    function isModifyWindowExpired(endISO) {
+    return moment().isAfter(moment(endISO));
+    }
+    
+    function disableModifySubmitButton() {
+      const submitBtn = document.querySelector('#bookingForm button[type="submit"]');
+      if (submitBtn) {
+          submitBtn.disabled = true; }
+     }
+     
+    function showBackToHomeButton() {
+        const submitBtn = document.querySelector('#bookingForm button[type="submit"]');
+        if (!submitBtn) return;
+    
+        // Change button appearance
+        submitBtn.textContent = 'Back to Home';
+        submitBtn.disabled = false;
+    
+        // Optional styling tweak (keep or remove)
+        submitBtn.style.backgroundColor = '#1f2937';
+    
+        // Remove any existing submit handlers by cloning
+        const newBtn = submitBtn.cloneNode(true);
+        submitBtn.parentNode.replaceChild(newBtn, submitBtn);
+    
+        // Assign new behavior
+        newBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = `${location.origin}/`;
+        });
+    }
 
     // =================================================================
     //        LOGIC FOR THE NEW DATE & TIME PICKER MODAL
@@ -2054,6 +2131,11 @@ function initializeDateTimePicker() {
               });
       
               chargerBookings.forEach(booking => {
+                    // ⭐ Do NOT block user's own reservation when modifying
+                  if (modifyMode && booking.id === modifyBookingId) {
+                      return; 
+                  }
+                  
                   const evtStart = moment(booking.start).tz("Asia/Kuala_Lumpur");
                   const evtEnd = moment(booking.end).tz("Asia/Kuala_Lumpur");
       
@@ -2081,6 +2163,40 @@ function initializeDateTimePicker() {
                   }
               });
           }
+          
+          function drawUserReservedSlot(date, charger, sliderContainer) {
+              if (!modifyMode || !modifyBookingId) return;
+              
+              // Find the user's booking
+              const booking = allEvents.find(evt => evt.id === modifyBookingId);
+              if (!booking || booking.extendedProps.charger !== charger) return;
+          
+              const startMoment = moment(booking.start).tz("Asia/Kuala_Lumpur");
+              const endMoment = moment(booking.end).tz("Asia/Kuala_Lumpur");
+          
+              const dayStart = moment(date).startOf("day").tz("Asia/Kuala_Lumpur");
+              const dayEnd = moment(date).endOf("day").tz("Asia/Kuala_Lumpur");
+          
+              // Only highlight if booking overlaps this day
+              if (!(startMoment.isBefore(dayEnd) && endMoment.isAfter(dayStart))) return;
+          
+              let startMinutes = 0;
+              if (startMoment.isAfter(dayStart)) {
+                  startMinutes = startMoment.hours() * 60 + startMoment.minutes();
+              }
+          
+              let endMinutes = 1440;
+              if (endMoment.isBefore(dayEnd)) {
+                  endMinutes = endMoment.hours() * 60 + endMoment.minutes();
+              }
+          
+              const slot = document.createElement("div");
+              slot.className = "userreserved-slot"; // NEW STYLE
+              slot.style.left = `${(startMinutes / 1440) * 100}%`;
+              slot.style.width = `${((endMinutes - startMinutes) / 1440) * 100}%`;
+          
+              sliderContainer.appendChild(slot);
+          }
       
           function updateAllBlockedSlots() {
               if (!modalSelectedCharger || !startDate) {
@@ -2088,8 +2204,20 @@ function initializeDateTimePicker() {
                   endBlockedSlotsEl.innerHTML = '';
                   return;
               }
+          
+              // Clear previous drawings
+              startBlockedSlotsEl.innerHTML = '';
+              endBlockedSlotsEl.innerHTML = '';
+          
+              // 🔴 Draw "Other Users" blocked slots
               drawBlockedSlots(startDate, modalSelectedCharger, startBlockedSlotsEl);
               drawBlockedSlots(endDate || startDate, modalSelectedCharger, endBlockedSlotsEl);
+          
+              // 🔵 Draw "User’s Own Reservation" slot (only when modifying)
+              if (modifyMode && modifyBookingId) {
+                  drawUserReservedSlot(startDate, modalSelectedCharger, startBlockedSlotsEl);
+                  drawUserReservedSlot(endDate || startDate, modalSelectedCharger, endBlockedSlotsEl);
+              }
           }
       
           function updateRangeIndicator() {
@@ -2204,23 +2332,27 @@ function initializeDateTimePicker() {
               for (const booking of allEvents) {
                   if (booking.extendedProps.charger === modalSelectedCharger) {
                       
-                      // 1. Convert booking ISO strings to Malaysia Moment Objects
+                      // 🚀 1. Skip the user's own reservation when modifying
+                      if (modifyMode && booking.id === modifyBookingId) {
+                          continue;
+                      }
+              
+                      // 2. Convert booking ISO strings into Malaysia-time moments
                       const bStartMoment = moment(booking.start).tz("Asia/Kuala_Lumpur");
                       const bEndMoment = moment(booking.end).tz("Asia/Kuala_Lumpur");
-
-                      // 2. Create "Shifted" Date objects that match the slider's coordinate system
-                      // (e.g., if booking is 2 PM MYT, create a JS Date that acts like 2 PM local)
+              
+                      // 3. Create shifted JS Date objects matching slider timestamps
                       const bookingStartShifted = new Date(
                           bStartMoment.year(), bStartMoment.month(), bStartMoment.date(),
                           bStartMoment.hour(), bStartMoment.minute(), 0
                       );
-
+              
                       const bookingEndShifted = new Date(
                           bEndMoment.year(), bEndMoment.month(), bEndMoment.date(),
                           bEndMoment.hour(), bEndMoment.minute(), 0
                       );
-
-                      // 3. Compare Apples to Apples (Shifted Date vs Shifted Date)
+              
+                      // 4. Detect real conflicts (NOT including user's own)
                       if (finalStart < bookingEndShifted && finalEnd > bookingStartShifted) {
                           conflictingBooking = booking;
                           break;
@@ -2283,8 +2415,21 @@ function initializeDateTimePicker() {
               locale: { firstDayOfWeek: 1 }, 
               onChange: (selectedDates) => {
                   if (isUpdatingCalendar) return;
-                  startDate = selectedDates[0] ? new Date(selectedDates[0].setHours(0,0,0,0)) : null;
-                  endDate = selectedDates[1] ? new Date(selectedDates[1].setHours(0,0,0,0)) : null;
+
+                  // If reservation has started, preserve the original start date
+                  if (reservationHasStarted && modifyMode && startDate) {
+                      // Only allow end date changes
+                      endDate = selectedDates[1] ? new Date(selectedDates[1].setHours(0,0,0,0)) : (selectedDates[0] ? new Date(selectedDates[0].setHours(0,0,0,0)) : null);
+                      // Restore start date
+                      if (!selectedDates[1] && selectedDates[0]) {
+                          // User tried to change dates, reset to original
+                          datePicker.setDate([startDate, endDate], false);
+                      }
+                  } else {
+                      startDate = selectedDates[0] ? new Date(selectedDates[0].setHours(0,0,0,0)) : null;
+                      endDate = selectedDates[1] ? new Date(selectedDates[1].setHours(0,0,0,0)) : null;
+                  }
+
                   wasCreatedByMidnight = false;
                   updateAllBlockedSlots();
                   updateSliderLabels();
@@ -2295,14 +2440,23 @@ function initializeDateTimePicker() {
       
           // --- Slider Handlers ---
           startSlider.on('update', (v) => {
-              startTimeInMinutes = Number(v[0]);
-              updateSliderLabels();
-      
-              if (isSingleDaySelection() && startTimeInMinutes >= endTimeInMinutes) {
-                  endSlider.set(startTimeInMinutes + MINIMUM_SLOT_MINUTES);
-              }
-              updateRangeIndicator();
-              updateSummary();
+                // Always update the internal variable so the green bar knows where to start
+                startTimeInMinutes = Number(v[0]);
+
+                // If reservation has started, we update visuals but skip the "push" logic
+                if (reservationHasStarted && modifyMode) {
+                    updateSliderLabels();
+                    updateRangeIndicator();
+                    updateSummary();
+                    return;
+                }
+
+                updateSliderLabels();
+                if (isSingleDaySelection() && startTimeInMinutes >= endTimeInMinutes) {
+                    endSlider.set(startTimeInMinutes + MINIMUM_SLOT_MINUTES);
+                }
+                updateRangeIndicator();
+                updateSummary();
           });
       
           endSlider.on('update', (v) => {
@@ -2349,7 +2503,14 @@ function initializeDateTimePicker() {
               }
       
               if (singleDay && endTimeInMinutes <= startTimeInMinutes) {
-                  startSlider.set(endTimeInMinutes - MINIMUM_SLOT_MINUTES);
+                  if (reservationHasStarted && modifyMode) {
+                    // Fix: If reservation started, don't move the start slider.
+                    // Instead, force the end slider to stay at least 15 mins after the start.
+                      endSlider.set(startTimeInMinutes + MINIMUM_SLOT_MINUTES);
+                  } else {
+                    // Original behavior: Push the start slider back if reservation hasn't started.
+                      startSlider.set(endTimeInMinutes - MINIMUM_SLOT_MINUTES);
+                }
               }
       
               updateRangeIndicator();
@@ -2371,29 +2532,56 @@ function initializeDateTimePicker() {
           // --- Modal Control ---
           function openModal() {
               modal.style.display = 'flex';
-              
-              // --- FIX: FORCE MALAYSIA TIME FOR SLIDER ---
+          
+              const existingCharger = mainFormChargerHidden.value;
+              const existingStart = mainFormStartHidden.value;
+              const existingEnd = mainFormEndHidden.value;
+          
+              // 🟢 CASE 1: We already have a selection → restore it
+              if (existingCharger && existingStart && existingEnd) {
+          
+                  // 1️⃣ Select charger
+                  chargerButtonsModal.forEach(btn => {
+                      btn.classList.remove('selected');
+                      if (btn.dataset.charger === existingCharger) {
+                          btn.classList.add('selected');
+                          modalSelectedCharger = existingCharger;
+                      }
+                  });
+          
+                  // 2️⃣ Restore date & time
+                  const s = new Date(existingStart);
+                  const e = new Date(existingEnd);
+          
+                  // Use your existing safe preload helper
+                  window.waitForSliderAndPreload(s, e);
+          
+                  return; // 🚫 DO NOT reset defaults
+              }
+          
+              // 🟠 CASE 2: No previous selection → default behavior
               const malaysiaDate = getMalaysiaDateShifted();
               const currentMinutes = malaysiaDate.getHours() * 60 + malaysiaDate.getMinutes();
-              // -------------------------------------------
-
+          
               let roundedStartTime = Math.ceil(currentMinutes / 15) * 15;
               let roundedEndTime = roundedStartTime + 60;
-              
-              if (roundedEndTime > 1440) { roundedEndTime = 1440; }
+          
+              if (roundedEndTime > 1440) roundedEndTime = 1440;
               if (roundedStartTime >= 1440 - MINIMUM_SLOT_MINUTES) {
                   roundedStartTime = 1440 - MINIMUM_SLOT_MINUTES;
                   roundedEndTime = 1440;
               }
-      
+          
               datePicker.clear();
               startDate = null;
               endDate = null;
+          
               startSlider.set(roundedStartTime);
               endSlider.set(roundedEndTime);
-      
+          
               chargerButtonsModal.forEach(b => b.classList.remove('selected'));
               modalSelectedCharger = null;
+          
               updateAllBlockedSlots();
               updateSliderLabels();
               updateRangeIndicator();
@@ -2402,6 +2590,78 @@ function initializeDateTimePicker() {
       
           function closeModal() { modal.style.display = 'none'; }
       
+          function waitForSliderAndPreload(s, e) {
+              let attempts = 0;
+          
+              const trySet = () => {
+                  attempts++;
+          
+                  // FIX 1: Check 'startSlider' directly. It IS the instance. 
+                  // Do NOT check 'startSlider.noUiSlider'.
+                  if (datePicker && startSlider && endSlider) {
+                      
+                      // 1. Preload DATE
+                      // 'true' triggers the onChange event so internal logic runs
+                      datePicker.setDate([s, e], true);
+          
+                      // 2. Convert to minutes (Using moment for TZ safety as suggested before)
+                      const s_moment = moment(s).tz("Asia/Kuala_Lumpur");
+                      const e_moment = moment(e).tz("Asia/Kuala_Lumpur");
+
+                      const startMin = s_moment.hours() * 60 + s_moment.minutes();
+                      const endMin   = e_moment.hours() * 60 + e_moment.minutes();
+
+                      // Explicitly sync the global variables used by the range indicator
+                      startTimeInMinutes = startMin;
+                      endTimeInMinutes = endMin;
+
+                      // Set the sliders
+                      startSlider.set(startMin);
+                      endSlider.set(endMin);
+
+                      // 3. Update UI
+                      updateAllBlockedSlots();
+                      updateSliderLabels();
+                      updateRangeIndicator();
+                      updateSummary();
+
+                      // 4. Disable start controls if reservation has started
+                      if (reservationHasStarted) {
+                          // Disable start date selection in flatpickr
+                          const calendarEl = document.querySelector('#date-calendar');
+                          if (calendarEl) {
+                              calendarEl.classList.add('disabled');
+                          }
+
+                          // Disable start slider
+                          const startSliderGroup = document.querySelector('.time-selector-group:has(#start-time-slider)');
+                          if (startSliderGroup) {
+                              startSliderGroup.classList.add('disabled');
+                          }
+
+                          // Disable the startSlider completely
+                          if (startSlider && startSlider.target) {
+                              startSlider.target.setAttribute('disabled', true);
+                          }
+                      }
+
+                      return; // Success
+                  }
+          
+                  // Retry mechanism
+                  if (attempts < 20) {
+                      setTimeout(trySet, 100);
+                  } else {
+                      console.warn("❌ Failed to preload modify slider: Sliders not initialized.");
+                  }
+              };
+          
+              trySet();
+          }
+          
+          // Ensure this line is present immediately after the function
+          window.waitForSliderAndPreload = waitForSliderAndPreload;
+          
           // --- Event Listeners ---
           mainFormDisplay.addEventListener('click', openModal);
           const closeBtn = document.getElementById('closeDateTimePicker');
@@ -2675,27 +2935,156 @@ function initializeDateTimePicker() {
         loadBookings();
         setupFilterButtons();
         setInterval(updateChargerStatus, 1 * 1000);
-    });
+        
+        (function loadModifyMode() {
+                const params = new URLSearchParams(window.location.search);
+                
+                let modifyExpired = false;
+                
+                if (params.get("mode") === "modify") {
+                    modifyMode = true;
+                    modifyBookingId = params.get("id");
+            
+                    console.log("Modify mode enabled for booking:", modifyBookingId);
+            
+                    fetch(`${WEB_APP_URL}?action=getSpecificBooking&id=${modifyBookingId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.success) {
+                                showMessage("error", "Error loading reservation.");
+                                return;
+                            }
+            
+                            // 1️⃣ Prefill base fields
+                            prefillModifyForm(data);
 
-    function showMessage(type, message) {
+                            // Save for later use
+                            const s = moment(data.startISO).tz("Asia/Kuala_Lumpur").toDate();
+                            const e = moment(data.endISO).tz("Asia/Kuala_Lumpur").toDate();
+
+                            // Check if reservation has started
+                            const now = moment().tz("Asia/Kuala_Lumpur");
+                            const startTime = moment(data.startISO).tz("Asia/Kuala_Lumpur");
+                            reservationHasStarted = now.isAfter(startTime);
+
+                            // 2️⃣ Switch to Booking Form first
+                            showTab("form");
+                            
+                            // 🛑 NEW: Check if the reservation is already cancelled
+                            if (data.status === "Cancelled") {
+                                modifyExpired = true; // Using this to block modal opening
+                                showMessage(
+                                    "error",
+                                    "⛔ This reservation has been cancelled and cannot be updated.",
+                                    { persistent: true }
+                                );
+                                showBackToHomeButton();
+                                return; // STOP logic here
+                            }
+
+                            if (isModifyWindowExpired(data.endISO)) {
+                                modifyExpired = true;
+                                showMessage(
+                                    "error",
+                                    "⛔ This reservation has ended and cannot be updated. Please place a new reservation.",
+                                    { persistent: true }
+                                );
+                            
+                                showBackToHomeButton(); // ⛔ HARD STOP
+                                return; // Do NOT open modal or allow interaction
+                            }
+                            
+                            setTimeout(() => {
+                                const modal = document.getElementById("dateTimePickerModal");
+                                if (modal) {
+                                    modal.style.display = "flex";
+                                    // modal.classList.add("active"); // Optional, depending on your CSS
+                                }
+                            
+                                // 3️⃣ Select charger (Simulate click to update internal state)
+                                const chargerButtons = modal.querySelectorAll(".charger-btn");
+                                chargerButtons.forEach(btn => {
+                                    btn.classList.remove("selected"); // Fix: Use 'selected' not 'active'
+                                    if (btn.dataset.charger === data.charger) {
+                                        btn.classList.add("selected"); // Fix: Use 'selected' not 'active'
+                                        btn.click(); // Triggers the listener in initializeDateTimePicker
+                                    }
+                                });
+                            
+                                // 4️⃣ Preload date & time using the exposed global function
+                                if (window.waitForSliderAndPreload) {
+                                    window.waitForSliderAndPreload(s, e);
+                                } else {
+                                    console.error("waitForSliderAndPreload not found. Ensure it is exposed to window.");
+                                }
+                            
+                            }, 300);
+                            
+                            if (!modifyExpired) {
+                                document.querySelector('#bookingForm button[type="submit"]').textContent =
+                                    "UPDATE RESERVATION";
+                            }
+
+                            if (reservationHasStarted) {
+                                showMessage("success", "Your reservation has started. You can only modify the end date and time.");
+                            } else {
+                                showMessage("success", "Please proceed to update your reservation.");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Modify mode load failed:", err);
+                            showMessage("error", "Error loading reservation.");
+                        });
+                }
+            })();
+    });
+    
+    // Allows modify mode to set the starting range in your time picker
+    function setInitialDateTimeRange(startISO, endISO) {
+        document.getElementById("start_datetime").value = startISO;
+        document.getElementById("end_datetime").value = endISO;
+    
+        // Update visible display
+        document.getElementById("datetime_display").value =
+            `${new Date(startISO).toLocaleString()} → ${new Date(endISO).toLocaleString()}`;
+    }
+
+    let messageTimer = null;
+    
+    function showMessage(type, message, options = {}) {
         const errorDiv = document.getElementById('errorMsg');
         const successDiv = document.getElementById('successMsg');
+        const { persistent = false } = options;
+    
+        // Clear any previous timers
+        if (messageTimer) {
+            clearTimeout(messageTimer);
+            messageTimer = null;
+        }
+    
+        // Hide both first (prevents overlap)
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
     
         if (type === 'success') {
             successDiv.textContent = message;
-            errorDiv.style.display = 'none';
             successDiv.style.display = 'block';
-            setTimeout(() => {
+    
+            // Success always auto-hides
+            messageTimer = setTimeout(() => {
                 successDiv.style.display = 'none';
             }, 10000);
     
         } else {
             errorDiv.textContent = message;
-            successDiv.style.display = 'none';
             errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 10000);
+    
+            // ❌ Only auto-hide if NOT persistent
+            if (!persistent) {
+                messageTimer = setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 10000);
+            }
         }
     }
 
@@ -2766,19 +3155,25 @@ function initializeDateTimePicker() {
         const eventsFromServer = serverResponse.data;
         console.info(`Success: Received ${eventsFromServer.length} events.`);
     
-        const serverIds = eventsFromServer.map(e => e.id).sort().join(',');
-        const cachedIds = cachedEvents.map(e => e.id).sort().join(',');
-    
-        if (serverIds !== cachedIds) {
-          console.info('%cChange detected. Updating local data.', 'color: blue; font-weight: bold;');
-          allEvents = eventsFromServer;
-          await saveEventsToIDB(eventsFromServer);
-          console.info(`%cSaved ${eventsFromServer.length} new events to IndexedDB.`, 'color: green;');
-          renderCalendar(allEvents);
-          updateChargerStatus();
-        } else {
-          console.log('No changes detected.');
-        }
+		const serverKeys = eventsFromServer
+		  .map(e => `${e.id}_${e.start}_${e.end}`)
+		  .sort()
+		  .join(',');
+		
+		const cachedKeys = cachedEvents
+		  .map(e => `${e.id}_${e.start}_${e.end}`)
+		  .sort()
+		  .join(',');
+		
+		if (serverKeys !== cachedKeys) {
+		    console.info('%cChange detected (ID or start/end changed). Updating local data.', 'color: blue; font-weight: bold;');
+		    allEvents = eventsFromServer;
+		    await saveEventsToIDB(eventsFromServer);
+		    renderCalendar(allEvents);
+		    updateChargerStatus();
+		} else {
+		    console.log('No changes detected.');
+		}
         console.groupEnd();
         
         // Data is now up-to-date
@@ -2834,7 +3229,7 @@ function initializeDateTimePicker() {
                     headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
                     events: events, contentHeight: isMobile ? 'auto' : 'auto', scrollTimeReset: false,
                     eventClick: info => showEventDetails(info.event),
-                    eventContent: arg => ({ html: `<div class="fc-event-main-frame"><div class="fc-event-title-container" style="font-weight:bold;"><div class="fc-event-title fc-sticky" style="color:#FFF;">${arg.event.title}</div><div style="font-size:0.85em; color:#FFF;">${arg.event.extendedProps.charger}</div></div></div>` })
+                    eventContent: arg => ({ html: `<div class="fc-event-main-frame"><div class="fc-event-title-container" style="font-weight:bold;"><div class="fc-event-title fc-sticky" style="color:#FFF;">${arg.event.extendedProps.plate}</div></div></div>` })
                 });
                 calendar.render();
                 calendarEl.style.touchAction = 'pan-y';
@@ -3237,7 +3632,7 @@ function initializeDateTimePicker() {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => btn.addEventListener('click', () => { buttons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterEventsByCharger(btn.dataset.charger); }));
     }
-
+  
     // Booking form submission - REFACTORED to use fetch()
 document.getElementById('bookingForm').addEventListener('submit', async function(ev) {
     ev.preventDefault();
@@ -3312,12 +3707,34 @@ document.getElementById('bookingForm').addEventListener('submit', async function
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
-            action: 'book',
-            data: data
+            action: modifyMode ? 'modify' : 'book',
+            data: {
+                id: modifyBookingId,          // REQUIRED for modify
+                email: data.email,
+                name: data.name,
+                plate: data.plate,
+                phone: data.phone,
+                charger: data.charger,
+                start_datetime: data.start_datetime,
+                end_datetime: data.end_datetime
+            }
         })
     })
     .then(res => res.json())
     .then(async (res) => {
+        if (modifyMode && res.status === "success") {
+            showMessage("success", "Reservation updated successfully!");
+        
+            await loadBookings();
+            modifyMode = false;
+        
+            // Redirect dynamically to the site root
+            setTimeout(() => {
+                location.href = `${location.origin}/`;
+            }, 1200);
+        
+            return;
+        }
         if (res.status === 'success' && res.newEvent) {
             ev.target.reset();
             document.getElementById('start_datetime').value = '';
