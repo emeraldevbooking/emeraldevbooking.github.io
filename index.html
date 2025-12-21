@@ -1754,7 +1754,7 @@
                 <div class="section-content">
                     <div class="section-content-inner">
                         <strong>Reservation Update and Cancellation Notice</strong>
-                        If you wish to update or cancel a reservation you made, please click on the "Update Reservation" or "Cancel Reservation" button in your reservation confirmation email. Refer to "FAQ" section for more information.<br><br>
+                        If you wish to update or cancel a reservation you made, please click on the "Update Reservation" or "Cancel Reservation" button in your reservation confirmation email. Refer to "FAQ" section for more information..<br><br>
                         
                         <strong>Having issues with Your Reservation?</strong>
                         Contact us via WhatsApp:<br>
@@ -1829,7 +1829,7 @@
             </div>
 
             <div class="copyright">
-                © <span id="copyrightYear"></span> Version 2.2 Build_251220
+                © <span id="copyrightYear"></span> Version 2.2 Build_251221
             </div>
         </div>
 
@@ -2406,6 +2406,13 @@ function initializeDateTimePicker() {
           // --- Date Picker ---
           const mytToday = getMalaysiaDateShifted();
           mytToday.setHours(0,0,0,0); // Ensure it's midnight Malaysia time
+          
+          // In modify mode, allow selecting past dates if the reservation started before today
+          let effectiveMinDate = mytToday;
+          if (modifyMode && modifyBookingId) {
+              // We'll update this later when we load the booking data
+              effectiveMinDate = null; // Temporarily allow all dates
+          }
           
           const datePicker = flatpickr("#date-calendar", {
               inline: true, 
@@ -3001,12 +3008,23 @@ function initializeDateTimePicker() {
                                     // modal.classList.add("active"); // Optional, depending on your CSS
                                 }
                             
+                                // 🔧 FIX: Update flatpickr minDate BEFORE selecting dates
+                                const calendarEl = document.querySelector('#date-calendar');
+                                if (calendarEl && calendarEl._flatpickr) {
+                                    const bookingStartDate = moment(data.startISO).tz("Asia/Kuala_Lumpur").toDate();
+                                    bookingStartDate.setHours(0, 0, 0, 0);
+                                    
+                                    // Update minDate to allow the original booking start date
+                                    calendarEl._flatpickr.set('minDate', bookingStartDate);
+                                    console.log('Updated flatpickr minDate to:', bookingStartDate);
+                                }
+                            
                                 // 3️⃣ Select charger (Simulate click to update internal state)
                                 const chargerButtons = modal.querySelectorAll(".charger-btn");
                                 chargerButtons.forEach(btn => {
-                                    btn.classList.remove("selected"); // Fix: Use 'selected' not 'active'
+                                    btn.classList.remove("selected");
                                     if (btn.dataset.charger === data.charger) {
-                                        btn.classList.add("selected"); // Fix: Use 'selected' not 'active'
+                                        btn.classList.add("selected");
                                         btn.click(); // Triggers the listener in initializeDateTimePicker
                                     }
                                 });
